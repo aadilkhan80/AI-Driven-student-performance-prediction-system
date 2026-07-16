@@ -1,0 +1,43 @@
+{
+    "gpa_metrics": {
+        "r2_score": 0.5574504982246327,
+        "mean_squared_error": 0.06475278282492375,
+        "mean_absolute_error": 0.20769521421141623
+    },
+    "risk_metrics": {
+        "accuracy": 0.7791666666666667
+    },
+    "feature_importances": {
+        "gpa": {
+            "study_hours": 0.4608650627193363,
+            "attendance": 0.11713318368151573,
+            "sleep_hours": 0.07405524517762216,
+            "previous_grade": 0.212535986137499,
+            "tutoring": 0.031775800426695595,
+            "extracurriculars": 0.01824593077395771,
+            "internet_access": 0.012670100844438143,
+            "parental_support_Low": 0.00919059643389256,
+            "parental_support_Medium": 0.005274442649803913,
+            "parental_support_High": 0.01963390625377815,
+            "stress_level_Low": 0.015501284585243755,
+            "stress_level_Medium": 0.007832823264191624,
+            "stress_level_High": 0.015285637052025378
+        },
+        "risk": {
+            "study_hours": 0.2833644445144917,
+            "attendance": 0.28637168761044157,
+            "sleep_hours": 0.09936852250976842,
+            "previous_grade": 0.16221776599303567,
+            "tutoring": 0.03402461099775437,
+            "extracurriculars": 0.023164420130070196,
+            "internet_access": 0.013203756947004035,
+            "parental_support_Low": 0.014334674686491597,
+            "parental_support_Medium": 0.011461075188393725,
+            "parental_support_High": 0.02601209141232747,
+            "stress_level_Low": 0.01894000181096249,
+            "stress_level_Medium": 0.012846450211468522,
+            "stress_level_High": 0.014690497987790433
+        }
+    },
+    "dataset_size": 1200
+}

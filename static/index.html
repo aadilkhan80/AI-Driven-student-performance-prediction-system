@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPredict AI — Student Performance Predictive Dashboard</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Style sheet -->
+    <link rel="stylesheet" href="/static/style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    
+    <div class="app-container">
+        <!-- Sidebar Navigation & Quick Info -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+                    </svg>
+                </div>
+                <h2>EduPredict <span>AI</span></h2>
+            </div>
+            
+            <nav class="side-nav">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <svg class="icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                    Performance Predictor
+                </button>
+                <button class="nav-btn" data-tab="analytics">
+                    <svg class="icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Feature Insights
+                </button>
+                <button class="nav-btn" data-tab="settings">
+                    <svg class="icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Model Control Panel
+                </button>
+            </nav>
+            
+            <div class="model-status-card">
+                <div class="status-header">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">Server Connected</span>
+                </div>
+                <div class="status-metrics">
+                    <div class="metric-item">
+                        <span class="lbl">GPA R² Score</span>
+                        <span class="val" id="model-r2">0.92</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="lbl">Risk Accuracy</span>
+                        <span class="val" id="model-acc">94.5%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="sidebar-footer">
+                <p>EduPredict AI v1.0.0</p>
+            </footer>
+        </aside>
+        
+        <!-- Main Dashboard View -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div>
+                    <h1 id="view-title">Performance Predictor</h1>
+                    <p class="subtitle" id="view-subtitle">Enter student metrics below to evaluate risk and forecast GPA.</p>
+                </div>
+                <div class="server-badge" id="offline-badge" style="display: none;">
+                    Offline Mode (Local Fallback Model Active)
+                </div>
+            </header>
+            
+            <!-- Dashboard Tab -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="dashboard-grid">
+                    <!-- Metrics Input Form -->
+                    <div class="card form-card">
+                        <div class="card-header">
+                            <h3>Student Profile Details</h3>
+                            <span class="card-subtitle">Adjust sliding controls or toggle values</span>
+                        </div>
+                        <form id="prediction-form" class="prediction-form">
+                            <!-- Numeric Controls Grid -->
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="study_hours">
+                                        Study Hours/Week
+                                        <span class="value-bubble" id="val-study_hours">15</span>
+                                    </label>
+                                    <input type="range" id="study_hours" name="study_hours" min="0" max="40" step="0.5" value="15">
+                                    <div class="range-labels">
+                                        <span>Minimal</span>
+                                        <span>Intense</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="attendance">
+                                        Attendance Rate (%)
+                                        <span class="value-bubble" id="val-attendance">85%</span>
+                                    </label>
+                                    <input type="range" id="attendance" name="attendance" min="0" max="100" step="1" value="85">
+                                    <div class="range-labels">
+                                        <span>Risk (0%)</span>
+                                        <span>Perfect (100%)</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="sleep_hours">
+                                        Avg Sleep Hours
+                                        <span class="value-bubble" id="val-sleep_hours">7.0</span>
+                                    </label>
+                                    <input type="range" id="sleep_hours" name="sleep_hours" min="3" max="12" step="0.5" value="7">
+                                    <div class="range-labels">
+                                        <span>Sleep Deprived</span>
+                                        <span>Well Rested</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="previous_grade">
+                                        Previous Exam Score (%)
+                                        <span class="value-bubble" id="val-previous_grade">75%</span>
+                                    </label>
+                                    <input type="range" id="previous_grade" name="previous_grade" min="0" max="100" step="1" value="75">
+                                    <div class="range-labels">
+                                        <span>Failing (0)</span>
+                                        <span>Top Grade (100)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Categorical & Dropdowns -->
+                            <div class="form-row-three">
+                                <div class="form-group">
+                                    <label for="parental_support">Parental Support</label>
+                                    <select id="parental_support" name="parental_support">
+                                        <option value="Low">Low</option>
+                                        <option value="Medium" selected>Medium</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="stress_level">Stress Level</label>
+                                    <select id="stress_level" name="stress_level">
+                                        <option value="Low">Low</option>
+                                        <option value="Medium" selected>Medium</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Toggle switches -->
+                            <div class="switches-container">
+                                <div class="switch-item">
+                                    <div class="switch-info">
+                                        <span class="switch-title">Academic Tutoring</span>
+                                        <span class="switch-desc">Extra tutorial classes</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="tutoring" name="tutoring">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="switch-item">
+                                    <div class="switch-info">
+                                        <span class="switch-title">Extracurriculars</span>
+                                        <span class="switch-desc">Clubs, sports, active participation</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="extracurriculars" name="extracurriculars" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="switch-item">
+                                    <div class="switch-info">
+                                        <span class="switch-title">Internet Access</span>
+                                        <span class="switch-desc">Broadband availability at home</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="internet_access" name="internet_access" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-block" id="predict-btn">
+                                <span>Calculate Predictions</span>
+                                <div class="btn-glow"></div>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Prediction Dashboard Cards -->
+                    <div class="results-column">
+                        <!-- Score Display Card -->
+                        <div class="card result-card">
+                            <div class="result-layout">
+                                <div class="score-donut-wrapper">
+                                    <div class="gpa-ring" id="gpa-ring">
+                                        <svg viewBox="0 0 100 100">
+                                            <circle cx="50" cy="50" r="40" class="ring-bg"></circle>
+                                            <circle cx="50" cy="50" r="40" class="ring-value" id="gpa-svg-ring"></circle>
+                                        </svg>
+                                        <div class="ring-text">
+                                            <span class="value" id="predicted-gpa">--</span>
+                                            <span class="label">GPA (0-4.0)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="score-details">
+                                    <h3>Performance Output</h3>
+                                    <div class="badge-status-container">
+                                        <span class="lbl-light">Academic Risk Level:</span>
+                                        <span class="risk-badge" id="risk-badge">--</span>
+                                    </div>
+                                    <div class="grade-estimate">
+                                        <span class="lbl-light">Letter Grade Equivalency:</span>
+                                        <span class="equivalent-letter" id="equivalent-letter">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Recommendations Card -->
+                        <div class="card recommendation-card">
+                            <div class="card-header">
+                                <h3>EduPredict Recommendations</h3>
+                                <span class="card-subtitle">AI-generated interventions to improve outcomes</span>
+                            </div>
+                            <div class="card-body">
+                                <ul class="recommendation-list" id="recommendation-list">
+                                    <li class="reco-placeholder">Enter details and run calculator to see personalized suggestions.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Analytics Tab -->
+            <section id="tab-analytics" class="tab-content">
+                <div class="analytics-layout">
+                    <!-- Column 1: Feature Importances -->
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3>Predictive Feature Weights</h3>
+                            <span class="card-subtitle">Which factors influence student success metrics the most?</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="importanceChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 2: Parameter Interactions -->
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3>Performance Benchmarks</h3>
+                            <span class="card-subtitle">Comparing the current student profile to average dataset parameters</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="comparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Settings & Model Portal -->
+            <section id="tab-settings" class="tab-content">
+                <div class="settings-grid">
+                    <div class="card settings-card">
+                        <div class="card-header">
+                            <h3>Model Training & Tuning Portal</h3>
+                            <span class="card-subtitle">Fine-tune training hyperparameters and retrain the random forest models</span>
+                        </div>
+                        
+                        <div class="retrain-form-box">
+                            <div class="form-group">
+                                <label for="num_students">Dataset Size for Retraining</label>
+                                <select id="num_students" name="num_students">
+                                    <option value="500">500 Students (Fast Training)</option>
+                                    <option value="1200" selected>1,200 Students (Standard Optimal)</option>
+                                    <option value="2500">2,500 Students (High Density)</option>
+                                    <option value="4000">4,000 Students (Maximum Stability)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="retrain-warning">
+                                <strong>Important:</strong> Clicking retrain will generate a new set of student records and fit the pipeline parameters. This may take 2-4 seconds.
+                            </div>
+                            
+                            <button class="btn btn-secondary" id="retrain-btn">
+                                <span>Retrain ML Pipelines</span>
+                                <div class="btn-glow"></div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card stats-full-card">
+                        <div class="card-header">
+                            <h3>Detailed Model Diagnostics</h3>
+                            <span class="card-subtitle">Current pipeline accuracy metrics from test split evaluation</span>
+                        </div>
+                        
+                        <div class="diagnostics-table-container">
+                            <table class="diagnostics-table">
+                                <thead>
+                                    <tr>
+                                        <th>Metric Name</th>
+                                        <th>Value</th>
+                                        <th>Interpretation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>GPA Model R² (R-squared)</td>
+                                        <td class="stat-highlight" id="stat-r2">--</td>
+                                        <td>Proportion of GPA variance explained by features</td>
+                                    </tr>
+                                    <tr>
+                                        <td>GPA Model Mean Squared Error</td>
+                                        <td class="stat-highlight" id="stat-mse">--</td>
+                                        <td>Average squared prediction error (lower is better)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>GPA Model Mean Absolute Error</td>
+                                        <td class="stat-highlight" id="stat-mae">--</td>
+                                        <td>Average absolute difference in GPA scores</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Risk Model Classifier Accuracy</td>
+                                        <td class="stat-highlight" id="stat-acc">--</td>
+                                        <td>Overall accuracy of risk category classification</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Trained Dataset Records</td>
+                                        <td class="stat-highlight" id="stat-size">--</td>
+                                        <td>Number of instances used to fit the model</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="/static/app.js"></script>
+</body>
+</html>
